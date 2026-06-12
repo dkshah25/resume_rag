@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import axios from "axios";
 import { 
   Upload, 
   FileText, 
@@ -127,16 +128,8 @@ export default function Home() {
     formData.append("file", fileToUpload);
 
     try {
-      const response = await fetch(`${API_URL}/upload`, {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.detail || "Failed to upload and parse resume.");
-      }
+      const response = await axios.post(`${API_URL}/upload`, formData);
+      const data = response.data;
 
       setUploadStatus("success");
       setPages(data.pages);
@@ -156,7 +149,8 @@ export default function Home() {
     } catch (err: any) {
       console.error(err);
       setUploadStatus("error");
-      setUploadError(err.message || "An unexpected error occurred.");
+      const errMsg = err.response?.data?.detail || err.message || "An unexpected error occurred.";
+      setUploadError(errMsg);
     } finally {
       setIsUploading(false);
     }
@@ -177,19 +171,11 @@ export default function Home() {
     setIsAsking(true);
 
     try {
-      const response = await fetch(`${API_URL}/ask`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ question: query }),
+      const response = await axios.post(`${API_URL}/ask`, {
+        question: query,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.detail || "Failed to fetch response from agent.");
-      }
+      const data = response.data;
 
       // Add assistant message with citation
       const assistantMsg: Message = {
@@ -201,9 +187,10 @@ export default function Home() {
       setMessages(prev => [...prev, assistantMsg]);
     } catch (err: any) {
       console.error(err);
+      const errMsg = err.response?.data?.detail || err.message || "Could not reach the server. Make sure the backend is running.";
       const errorMsg: Message = {
         role: "assistant",
-        content: `Error: ${err.message || "Could not reach the server. Make sure the backend is running."}`,
+        content: `Error: ${errMsg}`,
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorMsg]);
