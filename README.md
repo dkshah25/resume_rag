@@ -17,13 +17,6 @@ HireLens AI is an enterprise-grade candidate profile intelligence system designe
 
 ---
 
-## 🚀 Live Deployments
-
-* **Frontend Dashboard URL**: [https://hirelens-ai.vercel.app](https://hirelens-ai.vercel.app)
-* **Backend API URL**: [https://hirelens-api.up.railway.app](https://hirelens-api.up.railway.app)
-
----
-
 ## 🛠️ Technology Stack
 
 * **Frontend**: Next.js 15, TypeScript, Tailwind CSS, Lucide Icons
@@ -229,26 +222,6 @@ This ensures that candidate screening metrics are 100% accurate, trustworthy, an
 
 ---
 
-## 🖥️ Screen Walkthroughs
-
-### 1. Landing Screen & Empty Workspace
-The landing screen introduces recruiters to the workspace, providing helpful capability checklists before a document is active.
-![Landing Screen](./docs/screenshots/workspace_empty.png)
-
-### 2. Resume Upload & Processing
-Recruiters drag-and-drop or select documents. The system validates the format and performs text splitting and vector store compilation.
-![Resume Ingestion](./docs/screenshots/workspace_active.png)
-
-### 3. Structured Candidate Overview
-Extracted parameters (experience timeline, skills matrix, projects, education, certifications) automatically populate the sidebar panel.
-![Candidate Sidebar](./docs/screenshots/workspace_full.png)
-
-### 4. Grounded Chat Q&A & Source Citations
-Chat logs show the Q&A thread, displaying an explainable verification citation container immediately below chatbot answers.
-![Citation Chat](./docs/screenshots/chat_citations.png)
-
----
-
 ## 📥 Installation & Local Setup
 
 ### Prerequisites
@@ -263,8 +236,8 @@ cp .env.example .env
 ```
 Open the `.env` file and populate your keys:
 ```env
-GEMINI_API_KEY=AIzaSy...
-GROQ_API_KEY=gsk_...
+GEMINI_API_KEY=......
+GROQ_API_KEY=......
 ```
 
 ### 2. Backend Server Launch
@@ -347,18 +320,6 @@ Recruiters can use these prompts to test grounding and citation accuracy:
 * *What experience does the candidate have with Kubernetes?* (Tests the `"The resume does not provide that information."` response if missing)
 
 ---
-
-## ☁️ Deployment Instructions
-
-### Deploying Backend to Railway / Render
-1. Create a new service pointing to your repository.
-2. Set build and start options:
-   * Build Command: `pip install -r requirements.txt`
-   * Start Command: `uvicorn backend.main:app --host 0.0.0.0 --port $PORT`
-3. Configure Environment Variables in the hosting provider dashboard:
-   * `GEMINI_API_KEY`: Google Gemini Key
-   * `GROQ_API_KEY`: Groq API Key
-
 ### Deploying Frontend to Vercel
 1. Link your repository in Vercel.
 2. Select `frontend` as the root directory.
