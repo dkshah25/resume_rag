@@ -154,7 +154,7 @@ Details how components are hosted and interact securely with underlying services
 ```mermaid
 flowchart TD
     User([User Browser]) --> Frontend[Vercel Frontend]
-    Frontend --> Backend[Railway Backend]
+    Frontend --> Backend[Render Backend]
     Backend --> Gemini[Gemini API]
     Backend --> Groq[Groq API]
 ```
