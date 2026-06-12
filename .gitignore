@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.env
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Next.js & Frontend Node
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+node_modules/
+.next/
+out/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Vector Store Index files (FAISS)
+*.index
+*.faiss
+
+# System & IDE files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Temporary data, logs & uploads
+uploads/
+temp/
+*.log
+.system_generated/
+/brain/
+/logs/
+/tasks/
+/scratch/
