@@ -29,6 +29,12 @@ HireLens AI is an enterprise-grade candidate profile intelligence system designe
 
 ---
 
+## Deployments
+* **Frontend**: Vercel (https://resume-rag-dharmit-shahs-projects.vercel.app/)
+* **Backend**: Render (https://resume-rag-d8w2.onrender.com)
+
+---
+
 ## 📐 System Diagrams & Architecture
 
 ### 1. System Architecture
