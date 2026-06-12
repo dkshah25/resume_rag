@@ -13,7 +13,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from models.schemas import AskRequest, AskResponse, UploadResponse, ExtractedResumeData
 from utils.parser import extract_content
 from utils.rag import build_faiss_index, retrieve_relevant_chunks
-from utils.extractor import extract_structured_data
+from utils.extractor import extract_structured_data, is_resume
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 # Load environment variables
@@ -99,6 +99,15 @@ async def upload_resume(file: UploadFile = File(...)):
             
         # Get API key
         api_key = get_api_key()
+        
+        # 2.5 Verify if the document is a resume
+        logger.info("Checking if the document is a resume...")
+        if not is_resume(text, api_key):
+            logger.warning(f"File {filename} was rejected because it is not a resume.")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="this is not the resume"
+            )
         
         # 3. Build FAISS index from the chunks
         logger.info("Building FAISS index...")

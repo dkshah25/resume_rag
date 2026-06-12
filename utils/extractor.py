@@ -130,3 +130,78 @@ Resume text:
             education=[],
             certifications=[]
         )
+
+
+def is_resume(text: str, api_key: str) -> bool:
+    """
+    Validates if the provided text represents a resume or CV.
+    Returns True if it is a resume, False otherwise.
+    """
+    if not text or len(text.strip()) < 50:
+        return False
+
+    prompt = f"""
+You are an expert resume classifier. Analyze the following document content (first few paragraphs) and determine if it is a resume (CV / curriculum vitae) or not.
+
+A resume typically contains sections or patterns indicating:
+- Candidate name and contact details
+- Work experience, employment history, or professional roles
+- Education, academic history, degrees, or schools
+- Skills, technologies, tools, or areas of expertise
+- Projects, accomplishments, or summary statements
+
+If the text appears to be a resume/CV, reply with EXACTLY "YES".
+If the text does NOT look like a resume (e.g. it is Python/other code, a cookbook recipe, a book chapter, a user manual, a general article, a random list of items, etc.), reply with EXACTLY "NO".
+
+Do NOT output any other words, markdown, or explanation. Just "YES" or "NO".
+
+Document content snippet:
+---
+{text[:4000]}
+---
+"""
+
+    groq_key = os.getenv("GROQ_API_KEY")
+    result = "YES" # Default fallback to minimize disruption if both APIs fail
+
+    if groq_key:
+        logger.info("Checking if document is a resume using Groq...")
+        try:
+            from langchain_groq import ChatGroq
+            groq_llm = ChatGroq(
+                model="llama-3.3-70b-versatile",
+                api_key=groq_key,
+                temperature=0.0
+            )
+            response = groq_llm.invoke(prompt)
+            result = response.content.strip().upper()
+            logger.info(f"Groq classification response: {result}")
+        except Exception as ge:
+            logger.error(f"Groq classification failed: {ge}")
+
+    # Fallback to Gemini if Groq failed or wasn't configured
+    if not groq_key or result not in ["YES", "NO"]:
+        try:
+            os.environ["GOOGLE_API_KEY"] = api_key
+            os.environ["GEMINI_API_KEY"] = api_key
+            
+            llm = ChatGoogleGenerativeAI(
+                model="gemini-2.5-flash",
+                google_api_key=api_key,
+                temperature=0.0
+            )
+            logger.info("Checking if document is a resume using Gemini...")
+            response = llm.invoke(prompt)
+            result = response.content.strip().upper()
+            logger.info(f"Gemini classification response: {result}")
+        except Exception as e:
+            logger.error(f"Gemini classification failed: {e}")
+            
+    # Clean up the output in case LLM added extra punctuation or words
+    if "YES" in result:
+        return True
+    if "NO" in result:
+        return False
+        
+    return True  # Fallback to True to avoid blocking valid resumes in case of unexpected API failures
+
